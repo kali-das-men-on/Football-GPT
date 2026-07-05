@@ -1,5 +1,5 @@
 prompt = """I require an in-depth analysis of footballer statistics for a specific
-set of players to enhance my understanding of their performance 
+set of players to enhance my understanding of their performance in the world cup
 metrics.The analysis should include the following sections:
 1. Overview of each player's recent performance (e.g., goals scored, assists, minutes played)  
 2. Comparison of key statistics among selected players (e.g., shooting accuracy, pass completion rate)  
