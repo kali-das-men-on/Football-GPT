@@ -1,0 +1,99 @@
+# Football GPT
+
+An AI agent that compares footballers using live stats and an LLM, with a
+FastAPI backend and a plain HTML/JS frontend.
+
+## Project layout
+
+```
+football-gpt/
+├── backend/
+│   ├── main.py            # FastAPI app and routes
+│   ├── agent_service.py   # builds the LangChain agent, runs analysis
+│   ├── tools.py           # the stats-lookup tool + structured output schema
+│   ├── prompt.py          # the agent's system prompt
+│   ├── models.py          # API request/response shapes
+│   ├── requirements.txt
+│   └── .env.example
+├── frontend/
+│   ├── index.html
+│   ├── style.css
+│   └── script.js
+├── README.md
+└── ARCHITECTURE.md
+```
+
+## Run it locally
+
+**Backend**
+
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate        # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+cp .env.example .env            # then paste your real OpenRouter key into .env
+uvicorn main:app --reload --port 8000
+```
+
+Visit `http://localhost:8000/docs` to see and test the API directly, before
+touching the frontend at all.
+
+**Frontend**
+
+The frontend is static, so any local server works:
+
+```bash
+cd frontend
+python -m http.server 5500
+```
+
+Visit `http://localhost:5500`. It calls `http://localhost:8000` by default
+(set in `script.js`).
+
+## About the API key
+
+You uploaded a `.env` file with a live OpenRouter key in this conversation.
+Treat that key as exposed — rotate it in your OpenRouter dashboard, then put
+the new one in `backend/.env` (never `.env.example`, and never commit `.env`
+— `backend/.gitignore` already excludes it).
+
+## A note on the model
+
+`agent_service.py` uses `openai/gpt-oss-20b:free` over OpenRouter, same as
+your original code. Free-tier models are sometimes inconsistent at reliably
+calling tools and returning structured output — if `/api/analyze` errors
+with "the model did not return a structured response," that's the most
+likely cause. Swapping the `model=` string in `agent_service.py` for a
+stronger (paid) OpenRouter model is the fix if it's unreliable under demo
+conditions.
+
+## Deploying it for real
+
+**Backend (Render, free tier is fine for a hackathon demo):**
+
+1. Push this repo to GitHub.
+2. On Render: New → Web Service → point at the repo, root directory `backend`.
+3. Build command: `pip install -r requirements.txt`
+   Start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+4. Add `OPEN_ROUTER_API_KEY` under Environment, with your rotated key.
+5. Deploy — you'll get a URL like `https://football-gpt.onrender.com`.
+
+Railway works the same way if you prefer it.
+
+**Frontend (Vercel or Netlify):**
+
+1. Point either at the `frontend/` folder as a static site — no build step needed.
+2. Before deploying, edit `script.js` and change `API_BASE` to your Render/Railway
+   URL from above (or set `window.FOOTBALL_GPT_API_BASE` in a small inline script
+   in `index.html` if you want it configurable without editing the JS file).
+3. Once both are deployed, update `allow_origins` in `backend/main.py` from `"*"`
+   to your actual frontend URL, and redeploy the backend. `"*"` is fine for a
+   demo but shouldn't stay in anything you leave running.
+
+## What I'd add next (not built here)
+
+- Rate limiting on `/api/analyze` — each call spends LLM tokens.
+- A loading skeleton in the frontend instead of plain "Analyzing…" text.
+- Caching `get_football_data` results per player name, so re-analyzing the
+  same players doesn't re-hit TheSportsDB every time.
