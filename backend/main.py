@@ -8,12 +8,9 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from backend.agent_service import analyze_players
 from backend.models import AnalyzeRequest, AnalyzeResponse
-from fastapi.staticfiles import StaticFiles
 
 
 app = FastAPI(title="Football GPT API")
-
-app.mount("/", StaticFiles(directory="frontend_dist", html=True), name="frontend")
 
 
 app.add_middleware(

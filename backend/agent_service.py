@@ -28,7 +28,7 @@ from backend.tools import AnalysisResult, get_football_data
 
 load_dotenv()
 
-
+_agent = None
 
 
 def _build_agent():
@@ -41,8 +41,8 @@ def _build_agent():
     llm = ChatOpenAI(
         base_url="https://openrouter.ai/api/v1",
         api_key=api_key,
-        model="inclusionai/ling-3.0-flash-sante:free"
-    )
+        model="nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free"
+        )
     return create_agent(
         model=llm,
         tools=[get_football_data],
