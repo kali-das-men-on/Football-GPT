@@ -3,3 +3,5 @@ __pycache__/
 *.pyc
 venv/
 .venv/
+frontend/src/.env.example
+__pycache__
