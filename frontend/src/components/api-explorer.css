@@ -1,0 +1,89 @@
+.api-explorer {
+  display: grid;
+  grid-template-columns: minmax(220px, .8fr) minmax(0, 2fr);
+  gap: 16px;
+  padding: 16px;
+  border-radius: 22px;
+  background: rgba(255,255,255,.035);
+  border: 1px solid rgba(255,255,255,.08);
+}
+
+.api-explorer-list {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+}
+
+.api-explorer-list button {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 8px;
+  text-align: left;
+  padding: 11px;
+  color: inherit;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.api-explorer-list button:hover,
+.api-explorer-list button.active {
+  background: rgba(255,255,255,.06);
+  border-color: rgba(255,255,255,.1);
+}
+
+.api-explorer-list b {
+  font-size: .7rem;
+  opacity: .55;
+}
+
+.api-explorer-list span {
+  font-family: ui-monospace, monospace;
+  font-size: .78rem;
+  overflow-wrap: anywhere;
+}
+
+.api-explorer-panel {
+  min-width: 0;
+}
+
+.api-request {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.api-request > span {
+  font-weight: 800;
+  font-size: .72rem;
+}
+
+.api-request code {
+  flex: 1;
+  overflow-wrap: anywhere;
+}
+
+.api-request button {
+  padding: 8px 13px;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.api-explorer-panel pre {
+  min-height: 220px;
+  margin: 0;
+  padding: 18px;
+  overflow: auto;
+  font-size: .78rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 760px) {
+  .api-explorer {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,23 +1,13 @@
-// A purely presentational component: it receives data via props and
-// renders it. It holds no state of its own and knows nothing about
-// fetch -- this separation (App fetches, ResultsPanel displays) is what
-// makes each piece independently testable and reusable.
-export default function ResultsPanel({ analysis }) {
-  if (!analysis) return null; // nothing to show before the first search
+import { motion } from "motion/react";
 
-  return (
-    <section className="results">
-      <p className="overall-summary">{analysis.overall_summary}</p>
-      {analysis.players.map((player) => (
-        // key is required by React whenever you render a list, so it can
-        // track which item is which across re-renders. Player names are
-        // a reasonable key here since this app sends one request per list.
-        <div className="player-card" key={player.name}>
-          <h3>{player.name}</h3>
-          <p className="score">Score: {player.score}</p>
-          <p>{player.summary}</p>
-        </div>
-      ))}
-    </section>
-  );
+export default function ResultsPanel({ analysis }) {
+  if (!analysis) return null;
+  const players = Array.isArray(analysis.players) ? analysis.players : [];
+  return <section className="results" aria-live="polite">
+    {analysis.overall_summary && <p className="overall-summary">{analysis.overall_summary}</p>}
+    {players.map((player, index) => <motion.article className="player-card" key={`${player.name}-${index}`} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .32, delay: index * .07 }}>
+      <h3>{player.name}</h3>{player.score !== undefined && player.score !== null && <p className="score">IMPACT SCORE / {player.score}</p>}{player.summary && <p>{player.summary}</p>}
+    </motion.article>)}
+    {!players.length && !analysis.overall_summary && <p className="overall-summary">The request completed, but the API returned no displayable player results.</p>}
+  </section>;
 }

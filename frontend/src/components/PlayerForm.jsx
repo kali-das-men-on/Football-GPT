@@ -1,34 +1,17 @@
 import { useState } from "react";
+import { motion } from "motion/react";
 
-// A "controlled component": the textarea's value lives in React state
-// (via the value/onChange props), not in the DOM itself. This is the
-// core React concept that replaces manually reading input.value the way
-// the old script.js did.
 export default function PlayerForm({ onSubmit, loading }) {
   const [text, setText] = useState("");
-
-  function handleSubmit(e) {
-    e.preventDefault(); // stops the browser's default full-page-reload form submit
-    const players = text
-      .split(",")
-      .map((p) => p.trim())
-      .filter(Boolean);
-    onSubmit(players); // hands the parsed list up to App.jsx, which owns the actual request
+  function handleSubmit(event) {
+    event.preventDefault();
+    const players = [...new Set(text.split(",").map((name) => name.trim()).filter(Boolean))];
+    onSubmit(players);
   }
-
-  return (
-    <form className="input-panel" onSubmit={handleSubmit}>
-      <label htmlFor="players">Players to compare (comma-separated)</label>
-      <textarea
-        id="players"
-        rows={2}
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder="Lionel Messi, Cristiano Ronaldo, Kylian Mbappe"
-      />
-      <button type="submit" disabled={loading}>
-        {loading ? "Analyzing…" : "Analyze"}
-      </button>
-    </form>
-  );
+  return <form className="input-panel" onSubmit={handleSubmit}>
+    <label htmlFor="players">Players to compare <span className="label-muted">/ comma-separated</span></label>
+    <textarea id="players" rows={3} value={text} onChange={(event) => setText(event.target.value)} placeholder={"Lionel Messi, Cristiano Ronaldo\nKylian Mbappé"} aria-describedby="player-input-hint" disabled={loading} />
+    <motion.button type="submit" disabled={loading} whileTap={{ scale: .985 }}><span>{loading ? "Building comparison…" : "Run player analysis"}</span></motion.button>
+    <span id="player-input-hint" className="sr-only">Separate player names with commas.</span>
+  </form>;
 }

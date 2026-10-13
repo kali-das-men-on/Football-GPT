@@ -21,7 +21,7 @@ from dotenv import load_dotenv
 from langchain.agents import create_agent
 from langchain.agents.structured_output import ToolStrategy
 from langchain_openai import ChatOpenAI
-
+from langchain_google_genai import ChatGoogleGenerativeAI
 from backend.prompt import prompt as system_prompt
 from backend.tools import AnalysisResult, get_football_data
 
@@ -32,17 +32,16 @@ _agent = None
 
 
 def _build_agent():
-    api_key = os.getenv("OPEN_ROUTER_API_KEY")
+    api_key = os.getenv("GEMINI_KEY")
     if not api_key:
         raise RuntimeError(
             "OPEN_ROUTER_API_KEY is not set. Add it to backend/.env "
             "(copy backend/.env.example to get started)."
         )
-    llm = ChatOpenAI(
-        base_url="https://openrouter.ai/api/v1",
-        api_key=api_key,
-        model="nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free"
-        )
+    llm = ChatGoogleGenerativeAI(
+    model="gemini-3.8-flash",
+    google_api_key=api_key
+    )
     return create_agent(
         model=llm,
         tools=[get_football_data],

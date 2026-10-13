@@ -9,8 +9,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.agent_service import analyze_players
 from backend.models import AnalyzeRequest, AnalyzeResponse
 
+from backend.routers import health, football, analytics, history, feedback
+
 
 app = FastAPI(title="Football GPT API")
+
+app.include_router(health.router)
+app.include_router(football.router)
+app.include_router(analytics.router)
+app.include_router(history.router)
+app.include_router(feedback.router)
 
 
 app.add_middleware(
